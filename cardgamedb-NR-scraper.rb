@@ -3,7 +3,7 @@ require 'open-uri'
 require 'fileutils'
 
 LOCAL_BASE_DIR = '/netrunnercards/'
-SETS_REGEX = /-(core|trace-amount|cyber-exodus|what-lies-ahead)\.png/
+SETS_REGEX = /-(core|trace-amount|what-lies-ahead|cyber-exodus)\.png/
 FILE_URL_PREFIX = "http://www.cardgamedb.com"
 
 cardgamedbFiles = []
@@ -22,7 +22,13 @@ browser.images.each { |image|
   fileUrl.sub!('.jpg', '.png')
   fileName = fileUrl.split(/\//)[-1]
   if fileName
-    subDir = fileName.scan(SETS_REGEX)[0][0]
+    setMatches = fileName.match(SETS_REGEX)
+    if setMatches
+      subDir = setMatches.captures[0] || 'unknown'
+    else
+      subDir = 'unknown'
+    end
+
     dir = LOCAL_BASE_DIR + subDir + '/'
     fullFileWithPath = dir + fileName
     
