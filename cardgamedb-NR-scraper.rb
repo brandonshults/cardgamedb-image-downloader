@@ -13,7 +13,6 @@ browser = Watir::Browser.new
 browser.goto 'http://www.cardgamedb.com/index.php/netrunner/android-netrunner-card-search'
 browser.button(:id => 'andb-submit-button').click
 browser.li(:class => 'nrcard').wait_until_present
-all_images = browser.img(:class => 'lazy')
 
 browser.images.each { |image|
   next unless image.attribute_value("data-original")
