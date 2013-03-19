@@ -8,8 +8,19 @@ FILE_URL_PREFIX = "http://www.cardgamedb.com"
 
 cardgamedbFiles = []
 filesMap = {}
-not_downloaded = []
+not_found = {}
 
+
+
+def read_and_write(remoteFile, localFile)
+  open(remoteFile) {|src|
+    open(localFile,"wb") {|dst|
+      puts "writing file #{localFile}..."
+      dst.write(src.read)
+    }      
+  }
+end  
+  
 browser = Watir::Browser.new
 browser.goto 'http://www.cardgamedb.com/index.php/netrunner/android-netrunner-card-search'
 browser.button(:id => 'andb-submit-button').click
@@ -39,26 +50,31 @@ browser.images.each { |image|
         puts "adding directory #{dir}..."
       end
       begin
-        open(fileUrl) {|src|
-          open(fullFileWithPath,"wb") {|dst|
-            puts "writing file #{fullFileWithPath}..."
-            dst.write(src.read)
-          }      
-        }
+        read_and_write fileUrl, fullFileWithPath
       rescue
-        not_downloaded  << fileUrl
-        puts "skipping #{fileUrl}.  It doesn't exist."
+        not_found[fileUrl] = ""
+        #puts "skipping #{fileUrl}.  It doesn't exist..."
+        lowResFileUrl = fileUrl.sub /(.*\/)(.*?\.png)$/, '\1med_\2'
+        puts "attempting to get lower resolution version from #{lowResFileUrl}..."
+        fullLowResFileWithPath = dir + "med_" + fileName
+        begin
+          read_and_write lowResFileUrl, fullLowResFileWithPath
+          not_found[fileUrl] = lowResFileUrl
+        rescue
+        end
       end
     else
-      puts "skipping #{fileName}.  It exists at #{fullFileWithPath}"
+      #puts "skipping #{fileName}.  It exists at #{fullFileWithPath}"
     end
   end
 }
 
-unless not_downloaded.empty?
+unless not_found.empty?
   puts "Unable to find the following files:"
-  not_downloaded.each {|fileUrl|
-    puts "\t#{fileUrl}"
+  not_found.each {|mainFile, replacement|
+    puts "\t#{mainFile}"
+    puts "\t\tGot: #{replacement} instead." unless replacement == ""
   }
 end
+
 
