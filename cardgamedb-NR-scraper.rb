@@ -3,11 +3,12 @@ require 'open-uri'
 require 'fileutils'
 
 LOCAL_BASE_DIR = '/netrunnercards/'
-SETS_REGEX = /-(core|trace-amount|what-lies-ahead|cyber-exodus)\.png/
+SETS_REGEX = /-(core|trace-amount|what-lies-ahead|cyber-exodus|a-study-in-static)\.png/
 FILE_URL_PREFIX = "http://www.cardgamedb.com"
 
 cardgamedbFiles = []
 filesMap = {}
+not_downloaded = []
 
 browser = Watir::Browser.new
 browser.goto 'http://www.cardgamedb.com/index.php/netrunner/android-netrunner-card-search'
@@ -37,15 +38,27 @@ browser.images.each { |image|
         FileUtils.mkdir_p(dir)
         puts "adding directory #{dir}..."
       end
-      open(fileUrl) {|src|
-        open(fullFileWithPath,"wb") {|dst|
-          puts "writing file #{fullFileWithPath}..."
-          dst.write(src.read)
-        }      
-      }
+      begin
+        open(fileUrl) {|src|
+          open(fullFileWithPath,"wb") {|dst|
+            puts "writing file #{fullFileWithPath}..."
+            dst.write(src.read)
+          }      
+        }
+      rescue
+        not_downloaded  << fileUrl
+        puts "skipping #{fileUrl}.  It doesn't exist."
+      end
     else
       puts "skipping #{fileName}.  It exists at #{fullFileWithPath}"
     end
   end
 }
+
+unless not_downloaded.empty?
+  puts "Unable to find the following files:"
+  not_downloaded.each {|fileUrl|
+    puts "\t#{fileUrl}"
+  }
+end
 
