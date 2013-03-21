@@ -53,7 +53,6 @@ browser.images.each { |image|
         read_and_write fileUrl, fullFileWithPath
       rescue
         not_found[fileUrl] = ""
-        #puts "skipping #{fileUrl}.  It doesn't exist..."
         lowResFileUrl = fileUrl.sub /(.*\/)(.*?\.png)$/, '\1med_\2'
         puts "attempting to get lower resolution version from #{lowResFileUrl}..."
         fullLowResFileWithPath = dir + "med_" + fileName
@@ -64,7 +63,7 @@ browser.images.each { |image|
         end
       end
     else
-      #puts "skipping #{fileName}.  It exists at #{fullFileWithPath}"
+      puts "skipping #{fileName}.  It exists at #{fullFileWithPath}"
     end
   end
 }
