@@ -1,6 +1,6 @@
 About
 =====
-This is a set of ruby scripts that will download card images from the CardGameDB website and save them locally.
+This is a set of ruby scripts that will download card images for Netrunn: Android or Star Wars from the CardGameDB website and save them locally.
 
 Requirements
 ============
