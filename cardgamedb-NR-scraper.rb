@@ -12,7 +12,7 @@ cardgamedbFiles = []
 filesMap = {}
 not_found = {}
 
-setsArray = ['Core','Genesis','Creation and Control','Spin Cycle']
+setsArray = ['Core','Genesis','Creation and Control','The Spin Cycle']
 
 
 
